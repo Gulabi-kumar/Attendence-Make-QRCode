@@ -2,472 +2,375 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Smart India BSc IT Attendance</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QR Code Generator - CIMAGE College</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #e3f2fd;
+        color: #333;
         margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #dfe9f3, #ffffff);
+        padding: 40px 20px;
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: flex-start;
         min-height: 100vh;
       }
-
-      .container {
-        background-color: #ffffffee;
-        padding: 30px 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        max-width: 520px;
-        width: 92%;
+      .card {
+        background: #fff;
+        width: 380px;
+        padding: 30px 25px 40px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
       }
-
       h2 {
-        text-align: center;
-        margin-bottom: 12px;
-        font-size: 22px;
-        color: #333;
+        margin-bottom: 5px;
+        font-size: 26px;
+        color: #0d47a1;
       }
-
-      .status {
-        text-align: center;
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 10px;
-      }
-
-      .timer {
-        text-align: center;
+      .subtitle {
+        margin-bottom: 25px;
         font-size: 16px;
-        color: #d10000;
-        font-weight: bold;
-        margin-bottom: 14px;
+        color: #1e88e5;
+        font-weight: 600;
       }
 
+      #formInputs {
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
       label {
         font-weight: 600;
-        margin: 10px 0 5px;
-        display: block;
-        color: #333;
+        margin-right: 6px;
+        color: #0d47a1;
       }
-
-      input,
       select {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 15px;
-        background-color: #f9f9f9;
-        box-sizing: border-box;
+        padding: 6px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1.8px solid #90caf9;
+        outline-color: #42a5f5;
+        min-width: 90px;
+        cursor: pointer;
+        transition: border-color 0.25s ease;
+      }
+      select:hover,
+      select:focus {
+        border-color: #1e88e5;
       }
 
       button {
-        width: 100%;
-        padding: 12px;
-        background-color: #007bff;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
+        background: #1e88e5;
         border: none;
+        padding: 9px 18px;
         border-radius: 8px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
-        transition: 0.25s;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 3px 8px rgba(30, 136, 229, 0.3);
       }
-
       button:hover:not(:disabled) {
-        background-color: #0056b3;
+        background: #1565c0;
       }
-
       button:disabled {
-        background-color: #999;
+        background: #90caf9;
         cursor: not-allowed;
+        box-shadow: none;
       }
 
-      .footer {
-        text-align: center;
-        margin-top: 14px;
-        font-size: 13px;
+      #demoBox {
+        font-style: italic;
         color: #666;
+        padding: 12px 20px;
+        border: 1.5px dashed #90caf9;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        background: #bbdefb;
+        user-select: none;
       }
 
-      .disabled {
-        opacity: 0.5;
-        pointer-events: none;
+      #qrcode {
+        margin: 0 auto 15px auto;
+        display: none;
+        border: 3px solid #90caf9;
+        border-radius: 16px;
+        box-shadow: 0 4px 14px rgba(33, 150, 243, 0.4);
+        width: 250px !important;
+        height: 250px !important;
       }
 
-      .small {
-        font-size: 12px;
-        color: #777;
+      #timer,
+      #datetime {
+        font-weight: 600;
+        font-size: 14px;
+        margin: 8px 0;
+        color: #1565c0;
       }
 
-      .danger {
-        color: #b00;
+      #controls {
+        margin-top: 15px;
+      }
+      #controls button {
+        margin: 0 10px 0 10px;
+        width: 130px;
+        box-shadow: 0 3px 8px rgba(30, 136, 229, 0.3);
+      }
+
+      #confirmBox {
+        display: none;
+        background: #ffebee;
+        border: 1.8px solid #f44336;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        font-weight: 700;
+        color: #b71c1c;
+      }
+      #confirmBox p {
+        margin-bottom: 18px;
+        font-size: 16px;
+      }
+      #confirmBox button {
+        width: 80px;
+        margin: 0 10px;
+        font-weight: 700;
+      }
+
+      #attendanceClosed {
+        display: none;
+        margin-top: 30px;
+        font-weight: 700;
+        font-size: 18px;
+        color: #c62828;
+        user-select: none;
       }
     </style>
-    <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h2>📚 Smart India 🇮🇳<br />BSc IT Attendance (2023–26)</h2>
+    <div class="card">
+      <h2>🎓 CIMAGE College, Patna</h2>
+      <div class="subtitle">Course: BSc IT (2023–26)</div>
 
-      <div class="status" id="status">Initializing…</div>
-      <div class="timer" id="timer">⏳ Time left: 2:00</div>
-
-      <form
-        id="attendance-form"
-        action="https://mullet-brave-vulture.ngrok-free.app/webhook-test/0f62c736-a6d1-41cc-b72c-face086860c5"
-        method="POST"
-        autocomplete="off"
-      >
-        <label for="student_id">🎓 Student ID</label>
-        <input id="student_id" name="student_id" placeholder="444-9832" required />
-
-        <label for="email">📧 Email</label>
-        <input id="email" name="email" type="email" placeholder="raj.bscitstudent23.8933@cimage.in"  required />
-
-        <label for="roll">🔢 Roll No</label>
-        <input id="roll" name="roll" placeholder="47" required />
-
-        <label for="batch">📆 Batch</label>
-        <select id="batch" name="batch" required>
-          <option value="">Select batch</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
+      <div id="formInputs">
+        <label for="subject">Subject:</label>
+        <select id="subject">
+          <option value="C">C</option>
+          <option value="Java">Java</option>
+          <option value="Python">Python</option>
         </select>
 
-        <label for="section">🏫 Section</label>
-        <select id="section" name="section" required>
-          <option value="">Select section</option>
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
+        <label for="year">Year:</label>
+        <select id="year">
+          <option value="1">Year 1</option>
+          <option value="2">Year 2</option>
+          <option value="3">Year 3</option>
         </select>
 
-        <input type="hidden" name="latitude" id="latitude" />
-        <input type="hidden" name="longitude" id="longitude" />
-        <input type="hidden" name="current_time" id="current_time" />
-        <input type="hidden" name="fingerprint" id="fingerprint" />
-        <input
-          type="hidden"
-          name="fingerprint_version"
-          id="fingerprint_version"
-          value="fingerprintjs_v3_sha256"
-        />
-
-        <button type="submit" id="submitBtn" disabled>
-          📩 Submit Attendance
+        <button id="generateBtn" onclick="handleFormSubmission()">
+          Generate QR
         </button>
-      </form>
+      </div>
 
-      <div class="footer" id="footerText">
-        GPS + Fingerprint secured ✅ | Smart India 🛰️
+      <div id="demoBox">
+        📌 Select subject and year, then click "Generate QR" to create your
+        attendance code.
+      </div>
+
+      <canvas id="qrcode"></canvas>
+
+      <div id="timer"></div>
+      <div id="datetime"></div>
+
+      <div id="controls">
+        <button id="regenBtn">🔄 Regenerate QR (2 left)</button>
+        <button id="closeBtn">❌ Close QR</button>
+      </div>
+
+      <!-- ✅ Attendance Closed Message with subject name -->
+      <div id="attendanceClosed">
+        ❌ <span id="closedSubjectName"></span> attendance closed.
+      </div>
+
+      <div id="confirmBox">
+        <p>Are you sure you want to close the QR code?</p>
+        <div class="confirm-buttons">
+          <button id="confirmYes">Yes</button>
+          <button id="confirmNo">No</button>
+        </div>
       </div>
     </div>
 
     <script>
-      // ---------- QR VALIDATION (Required before anything else runs) ----------
-      const QR_SECRET = "mySuperSecretKey123"; // MUST match QR generator page
+      const QR_SECRET = "mySuperSecretKey123"; // Must match form.html
 
-      async function sha256(text) {
-        const data = new TextEncoder().encode(text);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-
-      function getQRParams() {
-        const params = new URLSearchParams(window.location.hash.slice(1));
-        return {
-          subject: params.get("subject"),
-          year: params.get("year"),
-          timestamp: params.get("timestamp"),
-          expires: params.get("expires"),
-          hash: params.get("hash"),
-        };
-      }
-
-      async function verifyQRLink() {
-        const { subject, year, timestamp, expires, hash } = getQRParams();
-
-        if (!subject || !year || !timestamp || !expires || !hash) {
-          document.body.innerHTML = "<h2>🔒 QR Code Required</h2><p>This form can only be opened via a valid QR code.</p>";
-          throw new Error("Missing QR parameters");
-        }
-
-        const expiryTime = parseInt(expires, 10);
-        if (Date.now() > expiryTime) {
-          document.body.innerHTML = "<h2>⛔ QR Code Expired</h2><p>This QR code is no longer valid.</p>";
-          throw new Error("QR code expired");
-        }
-
-        const rawData = `subject=${subject}&year=${year}&timestamp=${timestamp}&expires=${expires}`;
-        const expectedHash = await sha256(rawData + QR_SECRET);
-
-        if (expectedHash !== hash) {
-          document.body.innerHTML = "<h2>🚫 Invalid QR Code</h2><p>This QR code has been tampered with.</p>";
-          throw new Error("QR hash mismatch");
-        }
-
-        // Display subject & year in UI
-        const subjectYearDisplay = document.getElementById("qr-subject-year");
-        if (subjectYearDisplay) {
-          subjectYearDisplay.textContent = `📘 Subject: ${subject} | 🗓️ Year: ${year}`;
-        }
-      }
-
-      // Call QR verification early (blocks script if invalid)
-      await verifyQRLink();
-
-      // ---------- Configuration ----------
-      const COLLEGE_LAT = 25.623374; // Replace with actual latitude
-      const COLLEGE_LNG = 85.099183;
-      const ALLOWED_RADIUS_METERS = 100;
-      const FP_EXPIRY_MINUTES = 2;
-      const RESUBMIT_LOCK_MINUTES = 40;
-
-      // ---------- DOM ----------
-      const form = document.getElementById("attendance-form");
-      const submitBtn = document.getElementById("submitBtn");
+      const qrCanvas = document.getElementById("qrcode");
       const timerDisplay = document.getElementById("timer");
-      const statusEl = document.getElementById("status");
-      const footerText = document.getElementById("footerText");
-      const fpInput = document.getElementById("fingerprint");
-      const latInput = document.getElementById("latitude");
-      const lngInput = document.getElementById("longitude");
-      const currentTimeInput = document.getElementById("current_time");
+      const datetimeDisplay = document.getElementById("datetime");
+      const regenBtn = document.getElementById("regenBtn");
+      const closeBtn = document.getElementById("closeBtn");
+      const confirmBox = document.getElementById("confirmBox");
+      const confirmYes = document.getElementById("confirmYes");
+      const confirmNo = document.getElementById("confirmNo");
+      const generateBtn = document.getElementById("generateBtn");
+      const formInputs = document.getElementById("formInputs");
+      const demoBox = document.getElementById("demoBox");
+      const attendanceClosed = document.getElementById("attendanceClosed");
+      const closedSubjectName = document.getElementById("closedSubjectName");
 
-      if (!form || !submitBtn || !fpInput) {
-        console.error("⛔ Missing essential form elements.");
-        throw new Error("Required DOM elements not found");
+      let regenerateLimit = 2;
+      let countdownInterval;
+      let currentQRData = {};
+
+      window.onload = () => {
+        regenBtn.style.display = "none";
+        closeBtn.style.display = "none";
+        qrCanvas.style.display = "none";
+        timerDisplay.textContent = "";
+        datetimeDisplay.textContent = "";
+        attendanceClosed.style.display = "none";
+        demoBox.style.display = "block";
+      };
+
+      function handleFormSubmission() {
+        const subject = document.getElementById("subject").value;
+        const year = document.getElementById("year").value;
+        const timestamp = new Date().toISOString();
+
+        currentQRData = { subject, year, timestamp };
+        regenerateLimit = 2;
+
+        generateQRCode();
       }
 
-      // ---------- Helpers ----------
-      function setStatus(msg, isError = false) {
-        statusEl.textContent = msg;
-        statusEl.classList.toggle("danger", isError);
-      }
+      async function generateQRCode() {
+        qrCanvas.style.filter = "none";
+        qrCanvas.style.display = "block";
 
-      function disableForm(message) {
-        submitBtn.disabled = true;
-        submitBtn.classList.add("disabled");
-        footerText.textContent = message;
-      }
+        const ctx = qrCanvas.getContext("2d");
+        ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
 
-      function enableForm(message) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("disabled");
-        footerText.textContent = message;
-      }
+        const timestamp = new Date(currentQRData.timestamp).toISOString();
+        const expiryTime =
+          new Date(currentQRData.timestamp).getTime() + 2 * 60 * 1000;
 
-      function bufferToHex(buffer) {
-        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+        // 🔐 Create secure signature
+        const raw = `${currentQRData.subject}-${currentQRData.year}-${timestamp}-${expiryTime}-${QR_SECRET}`;
+        const sig = await hashSHA256Hex(raw);
+
+        // 🧾 Full QR Code URL with signature
+        const attendanceURL = `https://gulabi-kumar.github.io/cimage-attendence/#subject=${encodeURIComponent(
+          currentQRData.subject
+        )}&year=${encodeURIComponent(
+          currentQRData.year
+        )}&timestamp=${encodeURIComponent(
+          timestamp
+        )}&expires=${expiryTime}&sig=${sig}`;
+
+        QRCode.toCanvas(qrCanvas, attendanceURL, {
+          width: 250,
+          margin: 2,
+          color: {
+            dark: "#000000",
+            light: "#e0f7fa",
+          },
+        });
+
+        updateDateTime();
+        startTimer(2);
+
+        regenBtn.style.display = "inline-block";
+        closeBtn.style.display = "inline-block";
+        generateBtn.style.display = "none";
+        demoBox.style.display = "none";
+
+        regenBtn.disabled = false;
+        regenBtn.textContent = `🔄 Regenerate QR (${regenerateLimit} left)`;
       }
 
       async function hashSHA256Hex(text) {
-        const data = new TextEncoder().encode(text);
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
         const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        return bufferToHex(hashBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
       }
 
-      // ---------- Fingerprint ----------
-      async function generateAndStoreFingerprint() {
-        try {
-          setStatus("Generating secure fingerprint…");
-          const fpPromise = FingerprintJS.load();
-          const fp = await fpPromise;
-          const result = await fp.get();
-          const visitorId = result.visitorId || "";
-          const ua = navigator.userAgent || "";
-          const screenRes = `${screen.width || 0}x${screen.height || 0}`;
-          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-          const raw = `${visitorId}-${ua}-${screenRes}-${tz}`;
-          const hashed = await hashSHA256Hex(raw);
-          const expiry = Date.now() + FP_EXPIRY_MINUTES * 60 * 1000;
-          sessionStorage.setItem("fingerprint", hashed);
-          sessionStorage.setItem("fp_expiry", expiry.toString());
-          fpInput.value = hashed;
-          setStatus("Fingerprint ready ✅");
-          return true;
-        } catch (err) {
-          console.warn("Main fingerprint failed, using backup...", err);
-          try {
-            const ua = navigator.userAgent || "";
-            const screenRes = `${screen.width || 0}x${screen.height || 0}`;
-            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-            const now = new Date().toISOString().slice(0, 16);
-            const backupRaw = `backup-${ua}-${screenRes}-${tz}-${now}`;
-            const hashed = await hashSHA256Hex(backupRaw);
-            const expiry = Date.now() + FP_EXPIRY_MINUTES * 60 * 1000;
-            sessionStorage.setItem("fingerprint", hashed);
-            sessionStorage.setItem("fp_expiry", expiry.toString());
-            fpInput.value = hashed;
-            setStatus("Backup fingerprint used ✅");
-            return true;
-          } catch (e2) {
-            console.error("Backup fingerprint error:", e2);
-            setStatus("Unable to create fingerprint ❌", true);
-            return false;
-          }
-        }
+      function updateDateTime() {
+        const now = new Date();
+        const formatted = now.toLocaleString();
+        datetimeDisplay.textContent = `📅 Generated on: ${formatted}`;
       }
 
-      function isFingerprintValid() {
-        const expiry = parseInt(sessionStorage.getItem("fp_expiry") || "0", 10);
-        return Date.now() <= expiry;
-      }
-
-      // ---------- Location ----------
-      function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
-        const R = 6371e3;
-        const φ1 = (lat1 * Math.PI) / 180;
-        const φ2 = (lat2 * Math.PI) / 180;
-        const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-        const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-        const a = Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-      }
-
-      function getHighAccuracyLocation() {
-        return new Promise((resolve, reject) => {
-          if (!navigator.geolocation) return reject(new Error("Geolocation not supported"));
-
-          setStatus("📍 Please allow location access if prompted…");
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              const { latitude, longitude } = pos.coords;
-              latInput.value = latitude;
-              lngInput.value = longitude;
-              const dist = getDistanceFromLatLonInMeters(latitude, longitude, COLLEGE_LAT, COLLEGE_LNG);
-              resolve({ userLat: latitude, userLng: longitude, distance: dist });
-            },
-            (err) => reject(err),
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-          );
-        });
-      }
-
-      // ---------- Timer ----------
-      let timerInterval = null;
       function startTimer(minutes) {
         let seconds = minutes * 60;
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-          if (seconds < 0) {
-            clearInterval(timerInterval);
-            disableForm("⛔ Time expired. Attendance closed.");
-            setStatus("Time expired", true);
-            return;
+        clearInterval(countdownInterval);
+
+        countdownInterval = setInterval(() => {
+          let min = Math.floor(seconds / 60);
+          let sec = seconds % 60;
+          timerDisplay.textContent = `⏳ Time left: ${min}:${
+            sec < 10 ? "0" + sec : sec
+          }`;
+
+          if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            timerDisplay.textContent = "⛔ QR Code Expired!";
+            qrCanvas.style.filter = "blur(4px) grayscale(1)";
+            regenBtn.disabled = true;
           }
-          const min = Math.floor(seconds / 60);
-          const sec = seconds % 60;
-          timerDisplay.textContent = `⏳ Time left: ${min}:${sec < 10 ? "0" + sec : sec}`;
+
           seconds--;
         }, 1000);
       }
 
-      // ---------- Timestamp ----------
-      function updateCurrentTime() {
-        currentTimeInput.value = new Date().toISOString();
-      }
-
-      // ---------- LocalStorage Lock ----------
-      function checkSubmissionLock() {
-        const lastSubmit = parseInt(localStorage.getItem("last_submit_time") || "0", 10);
-        const elapsed = (Date.now() - lastSubmit) / (1000 * 60); // minutes
-        if (elapsed < RESUBMIT_LOCK_MINUTES) {
-          const remaining = Math.ceil(RESUBMIT_LOCK_MINUTES - elapsed);
-          disableForm(`🕒 Already submitted. Try again after ${remaining} min.`);
-          setStatus("Submission locked", true);
-          return true;
-        }
-        return false;
-      }
-
-      function setSubmissionLock() {
-        localStorage.setItem("last_submit_time", Date.now().toString());
-      }
-
-      // ---------- Form Submit ----------
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        if (!isFingerprintValid()) {
-          alert("⛔ Fingerprint expired. Please reload.");
-          disableForm("⚠️ Fingerprint expired.");
-          setStatus("Fingerprint expired", true);
-          return;
-        }
-
-        updateCurrentTime();
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Submitting... ⏳";
-
-        const formData = new FormData(form);
-
-        try {
-          const response = await fetch(form.action, {
-            method: form.method,
-            body: formData,
-          });
-
-          if (response.ok) {
-            setSubmissionLock();
-            disableForm("✅ Attendance submitted successfully.");
-            setStatus("Submitted — thank you ✅");
-          } else {
-            throw new Error(`HTTP ${response.status}`);
+      regenBtn.addEventListener("click", () => {
+        if (regenerateLimit > 0) {
+          regenerateLimit--;
+          currentQRData.timestamp = new Date().toISOString();
+          generateQRCode();
+          regenBtn.textContent = `🔄 Regenerate QR (${regenerateLimit} left)`;
+          if (regenerateLimit === 0) {
+            regenBtn.disabled = true;
           }
-        } catch (error) {
-          console.error("Error submitting attendance:", error);
-          alert("⚠️ Failed to submit attendance. Please try again.");
-          setStatus("❌ Submission failed. Try again.", true);
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Submit";
         }
       });
 
-      // ---------- Init ----------
-      (async function init() {
-        if (checkSubmissionLock()) return;
-        setStatus("🔒 Verifying identity & location…");
-        startTimer(FP_EXPIRY_MINUTES);
+      closeBtn.addEventListener("click", () => {
+        confirmBox.style.display = "block";
+      });
 
-        const fpOk = await generateAndStoreFingerprint();
-        if (!fpOk) {
-          disableForm("❌ Could not create fingerprint.");
-          return;
-        }
+      confirmYes.addEventListener("click", () => {
+        clearInterval(countdownInterval);
+        qrCanvas.style.display = "none";
+        timerDisplay.textContent = "";
+        datetimeDisplay.textContent = "";
 
-        try {
-          const { distance } = await getHighAccuracyLocation();
-          if (distance > ALLOWED_RADIUS_METERS) {
-            alert("❌ You are not inside the campus.");
-            setStatus(`Outside campus by ${Math.round(distance)}m`, true);
-            disableForm("🚫 Outside allowed location.");
-            return;
-          }
-          setStatus("Location verified ✅");
-          enableForm("GPS + Fingerprint secured ✅ | You may submit");
-        } catch (locErr) {
-          console.warn("Location error:", locErr);
-          if (locErr.code === 1) {
-            alert("⚠️ Location permission is required.");
-            setStatus("Location permission denied", true);
-            disableForm("❌ Location access denied.");
-          } else {
-            setStatus("Location unavailable", true);
-            disableForm("❌ Location not available.");
-          }
-        }
-      })();
-    
-      // QR UI and generation code removed — main page only needs QR verification (handled above)
+        regenBtn.style.display = "none";
+        closeBtn.style.display = "none";
+        generateBtn.style.display = "none";
+        formInputs.style.display = "none";
+        demoBox.style.display = "none";
+
+        // ✅ Set subject name in close message
+        closedSubjectName.textContent = currentQRData.subject;
+
+        attendanceClosed.style.display = "block";
+        confirmBox.style.display = "none";
+      });
+
+      confirmNo.addEventListener("click", () => {
+        confirmBox.style.display = "none";
+      });
     </script>
   </body>
 </html>
